@@ -9,7 +9,6 @@ Defining the primary keys,
 Cleaning the data.
 
 - [Data Enrichment](#data-enrichment)
-
 adding new columns,
 Descriptive dimensions,
 Descriptive categories,
