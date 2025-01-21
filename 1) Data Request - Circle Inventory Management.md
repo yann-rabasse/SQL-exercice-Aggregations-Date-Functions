@@ -1,4 +1,4 @@
-# Data Exploration and Cleaning
+# Data Request - CIRCLE Inventory Management
 
 ## Objective: 
 The objective of this exercise is to query Circle’s stock data in SQL.
