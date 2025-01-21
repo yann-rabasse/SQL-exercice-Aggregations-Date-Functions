@@ -9,6 +9,12 @@ Data aggregation & analysis: Perform the aggregation to analyze parcel delivery
 ## Sources:
 [Download Here](#https://docs.google.com/spreadsheets/d/1qhHVVdi6Z8PnD62QJtbnEjyX8d35sho573XwoasrYBk/edit?gid=0#gid=0)
 
+## Table of Contents
+- [Data Exploration](#data-exploration)
+- [Data Enrichment](#data-enrichment)
+- [Data Aggregation and Analysis](#data-aggregation-and-analysis)
+- [Delay](#delay)
+
 ## 1) Data Exploration
 Explore and understand the structure of both tables. How many columns are there? How many rows? Can you understand what data each of the columns contain?
 ```
@@ -187,7 +193,7 @@ SELECT
 FROM `course15.cc_parcel`
 ```
 
-## 3) Data Aggregation & Analysis
+## 3) Data Aggregation and Analysis
 The logistics team would like to obtain statistics on shipments, transportation and delivery times in order to analyze them at different levels of granularity.
 
 Run some aggregation functions on the cc_parcel_kpi table to obtain the following global statistics:
