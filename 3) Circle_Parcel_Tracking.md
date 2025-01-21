@@ -1,32 +1,60 @@
-Objective
-🎯 The objective of this exercise is to query Circle’s parcel data in SQL to perform relevant analyses.
+## Objective
+The objective of this exercise is to query Circle’s parcel data in SQL to perform relevant analyses.
 
 The different steps of the exercise are:
 Data exploration: Understand the structure of the tables and define the primary keys.
-
 Data enrichment: Add dimensions and KPIs needed to analyze parcel delivery
-
 Data aggregation & analysis: Perform the aggregation to analyze parcel delivery
 
-Data Import
-Copy the 15 - circle_parcel Google Sheet on your drive
+## Sources:
+[Download Here](#https://docs.google.com/spreadsheets/d/1qhHVVdi6Z8PnD62QJtbnEjyX8d35sho573XwoasrYBk/edit?gid=0#gid=0)
 
-In the course15 dataset, create the cc_parcel table in your BigQuery project from parcel_sheet
-
-In the course15 dataset, create the cc_parcel_product table in your BigQuery project from parcel_product_sheet
-
-💁🏽 _Help_ - Google documentation to create a table from Google Sheet. In the advanced options, don’t forget to add 1 to the Header rows to skip option.
-
-📚 Data dictionary
-1) Data Exploration
+## 1) Data Exploration
 Explore and understand the structure of both tables. How many columns are there? How many rows? Can you understand what data each of the columns contain?
+```
+SELECT
+  *
+FROM `course15.cc_parcel`;
+
+SELECT
+  *
+FROM `course15.cc_parcel_product`
+```
 
 What is the primary key of the cc_parcel table?
+```
+SELECT
+  ### Key ###
+  parcel_id
+  ###########
+ ,count(*) AS nb
+FROM `course15.cc_parcel`
+GROUP BY
+  parcel_id
+HAVING nb>=2
+ORDER BY nb DESC
+```
 
 What is the primary key of cc_parcel_product table?
+```
+SELECT
+  ### Key ###
+  parcel_id
+  ,model_name
+  ###########
+  ,count(*) AS nb
+FROM `course15.cc_parcel_product`
+GROUP BY
+  parcel_id
+  ,model_name
+HAVING nb>=2
+ORDER BY nb DESC
+```
+Note: The primary key is parcel_id + model_name. It is not ideal to have model_name as a string. It would have been better to have the model_id but it is not available in the table.
 
-2) Data Enrichment
-2.1) Parcel Status
+
+## 2) Data Enrichment
+### 2.1) Parcel Status
 The parcel may be at different stages of the delivery process:
 
 If date_cancelled is not null, it means that the status of the parcel is Cancelled.
@@ -38,17 +66,47 @@ If the date_delivery is null (and the date_shipping is not null and the date_can
 If the date_delivery is not null, the parcel has already been delivered. The status of the parcel is Delivered.
 
 In the cc_parcel table, add a new status column that contains the delivery status of the parcel by using the CASE WHEN clause. Save the results in a new table cc_parcel_kpi.
-2.2) Delivery KPI
+```
+SELECT
+  ### Key ###
+  parcel_id
+  ###########
+  -- parcel infos
+  ,parcel_tracking
+  ,transporter
+  ,priority
+  -- date --
+  ,date_purchase
+  ,date_shipping
+  ,date_delivery
+  ,date_cancelled
+  -- status --
+  ,CASE
+    WHEN date_cancelled IS NOT NULL THEN 'Cancelled'
+    WHEN date_shipping IS NULL THEN 'In Progress'
+    WHEN date_delivery IS NULL THEN 'In Transit'
+    WHEN date_delivery IS NOT NULL THEN 'Delivered'
+    ELSE NULL
+  END AS status
+FROM
+  `course15.cc_parcel`
+```
+
+
+### 2.2) Delivery KPI
 The Logistics & Shipping team wants to calculate and control:
 
-expedition_time - time between purchase and shipping
+- expedition_time - time between purchase and shipping
+- transport_time - time between purchase and delivery
+- delivery_time - time between shipping and delivery
 
-transport_time - time between purchase and delivery
+<b>KPI Definitions<b>
 
-delivery_time - time between shipping and delivery
+List of Parcels
+Number of parcels by status type. Shows the current status of shipping operations or delivery.
 
-❓Refresher on KPI definitions for logistics
-
+Shipping & Delivery Time
+Shipping Time: measures supply-chain performance, time between order reception date and shipping date.
 
 Let’s create some new fields!
 
